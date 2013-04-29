@@ -35,12 +35,17 @@ if not os.path.exists(os.path.expanduser(outputDir)):
 
 def getMessagesViaNntp(server, group, debug):
 	connection = nntplib.NNTP(server)
+	groupInfo = connection.group(group)[0].split(' ')
+	firstMessageNumber = int(groupInfo[2])
+	lastMessageNumber = int(groupInfo[3])
 
-	# I should improve this, eg automatically use the datetime of the most
-	# recent file in the outputDir
-	date = datetime.date.today()
+	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
+		message = connection.article(messageNumber)[1]
 
-	print(connection.newnews(group, date))
+		for messageLine in message.lines:
+			messageLine = messageLine.decode()
+			print(messageLine)
+
 	connection.quit()
 	return
 
