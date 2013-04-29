@@ -33,6 +33,27 @@ if not os.path.exists(os.path.expanduser(configFile)):
 if not os.path.exists(os.path.expanduser(outputDir)):
 	os.mkdir(os.path.expanduser(outputDir), 0o755)
 
+def writeMessage(lines):
+	for line in lines:
+		splitMessageLine = line.decode().split(' ')
+
+		if (splitMessageLine[0] == 'Message-ID:'):
+			messageID = splitMessageLine[1][1:-1]
+			hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
+			print('Downloading message', hashedMessageID)
+			hashDir = hashedMessageID[:2]
+			hashFile = hashedMessageID[2:]
+
+			if not os.path.exists(os.path.expanduser(outputDir+'/'+hashDir)):
+				os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0o755)
+
+			messageFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
+
+			for messageLineAgain in lines:
+				messageFile.write(messageLineAgain.decode()+'\n')
+
+			messageFile.close()
+
 def getMessagesViaNntp(server, group, debug):
 	connection = nntplib.NNTP(server)
 	groupInfo = connection.group(group)[0].split(' ')
@@ -42,9 +63,7 @@ def getMessagesViaNntp(server, group, debug):
 	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
 		message = connection.article(messageNumber)[1]
 
-		for messageLine in message.lines:
-			messageLine = messageLine.decode()
-			print(messageLine)
+		writeMessage(message.lines)
 
 	connection.quit()
 	return
@@ -58,31 +77,10 @@ def getMessagesViaPop3(server, username, password, debug):
 	for emailNumber in list[1]:
 		emailNumberActual = emailNumber.decode().split(' ')[0]
 		email = connection.retr(emailNumberActual)
+		writeMessage(email[1])
 
-		for emailLine in email[1]:
-			splitEmailLine = emailLine.decode().split(' ')
-
-			if (splitEmailLine[0] == 'Message-ID:'):
-				messageID = splitEmailLine[1][1:-1]
-				hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
-				print('Downloading message', hashedMessageID)
-				hashDir = hashedMessageID[:2]
-				hashFile = hashedMessageID[2:]
-
-				if not os.path.exists(os.path.expanduser(outputDir+'/'+hashDir)):
-					os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0o755)
-
-				emailFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
-
-				for emailLineAgain in email[1]:
-					emailFile.write(emailLineAgain.decode()+'\n')
-
-				emailFile.close()
-
-				if (debug == False):
-					connection.dele(emailNumberActual)
-
-				break
+		if (debug == False):
+			connection.dele(emailNumberActual)
 
 	connection.quit()
 	return
