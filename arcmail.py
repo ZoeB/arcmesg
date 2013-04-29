@@ -64,3 +64,5 @@ for line in csv.reader(config, delimiter='\t'):
 				emailFile.close()
 				connection.dele(emailNumberActual)
 				break
+
+	connection.quit()
