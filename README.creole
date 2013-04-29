@@ -1,6 +1,30 @@
 == ArcMesg ==
 
+ArcMesg is a simple program used to archive messages, both e-mails
+and USENET news.  Each message is stored in a separate file, named
+after the SHA1 of its universally unique message ID.
+
+=== Usage ===
+
+To use ArcMesg, set up a file in your home directory called
+{{{.arcmesgrc}}} with information about the messages you want to
+retrieve, in the following tab-separated format:
+
+{{{
+pop3	mail.example.com	username	password
+nntp	news.example.com	example.groupname
+}}}
+
+Any combination of POP3 and news servers is allowed.
+
+When you run the script, it will archive all the messages it can
+read in these places, storing them all in a directory called
+{{{message-archive}}} which resides in your home directory.
+
 === To do ===
 
 * Use {{{argparse}}}
 * Write errors to a log file, not the screen
+* Don't get the same message multiple times
+* Write import and export tools
+* Port to C
