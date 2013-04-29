@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
-# ArcMail, a program to archive e-mails, by Zoe Blade
+# ArcMail, a program to archive e-mails and news, by Zoe Blade
 # Instructions:
 # Make a file ~/.arcmesgrc
-# Give it a list of POP3 accounts in the format:
-# protocol\tservername\tusername\tpassword
+# Give it a list of POP3 and NNTP accounts in the format:
+# pop3\tservername\tusername\tpassword
+# nntp\tservername\tgroup
 # You can add comments by beginning a line with a # symbol
 # Run this script periodically with a cron job
 # The e-mails will be downloaded, stored in a Git-like hierarchy of files,
 # and deleted from the POP3 server.
+# The news will be downloaded and stored in the same manner.
 # Use the -d argument for debug mode, to avoid deleting e-mails.
 # This program is intended to be used with its own e-mail accounts,
 # which aren't shared with real e-mail clients.  It comes without warranty.
