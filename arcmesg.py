@@ -52,9 +52,15 @@ def writeMessage(lines):
 			messageFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
 
 			for messageLineAgain in lines:
-				messageFile.write(messageLineAgain.decode()+'\n')
+				try:
+					messageFile.write(messageLineAgain.decode()+'\n')
+				except: # If we can't cope with a message, don't save it
+					messageFile.close()
+					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
+					return
 
 			messageFile.close()
+	return
 
 def getMessagesViaNntp(server, group, debug):
 	connection = nntplib.NNTP(server)
