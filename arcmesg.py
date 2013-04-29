@@ -57,6 +57,7 @@ def writeMessage(lines):
 				except: # If we can't cope with a message, don't save it
 					messageFile.close()
 					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
+					print('Discarding message', hashedMessageID, messageID)
 					return
 
 			messageFile.close()
@@ -69,9 +70,11 @@ def getMessagesViaNntp(server, group, debug):
 	lastMessageNumber = int(groupInfo[3])
 
 	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
-		message = connection.article(messageNumber)[1]
-
-		writeMessage(message.lines)
+		try:
+			message = connection.article(messageNumber)[1]
+			writeMessage(message.lines)
+		except:
+			pass
 
 	connection.quit()
 	return
