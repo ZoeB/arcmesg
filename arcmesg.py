@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# ArcMail, a program to archive e-mails and news, by Zoe Blade
+# ArcMesg, a program to archive e-mails and news, by Zoe Blade
 # Instructions:
 # Make a file ~/.arcmesgrc
 # Give it a list of POP3 and NNTP accounts in the format:
