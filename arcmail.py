@@ -10,7 +10,7 @@ if not os.path.exists(os.path.expanduser(configFile)):
 	exit()
 
 if not os.path.exists(os.path.expanduser(outputDir)):
-	os.mkdir(os.path.expanduser(outputDir))
+	os.mkdir(os.path.expanduser(outputDir), 0755)
 
 config = open(os.path.expanduser(configFile))
 
@@ -41,7 +41,7 @@ for line in csv.reader(config, delimiter='\t'):
 				hashFile = hashedMessageID[2:]
 
 				if not os.path.exists(os.path.expanduser(outputDir+'/'+hashDir)):
-					os.mkdir(os.path.expanduser(outputDir+'/'+hashDir))
+					os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0755)
 
 				emailFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
 
