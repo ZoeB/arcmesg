@@ -50,5 +50,5 @@ for line in csv.reader(config, delimiter='\t'):
 					emailFile.write(emailLineAgain.decode()+'\n')
 
 				emailFile.close()
-				# connection.dele(emailNumber[0])
+				connection.dele(emailNumber[0])
 				break
