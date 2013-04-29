@@ -35,18 +35,12 @@ if not os.path.exists(os.path.expanduser(outputDir)):
 
 def getMessagesViaNntp(server, group, debug):
 	connection = nntplib.NNTP(server)
-	#connection.group(group)
 
 	# I should improve this, eg automatically use the datetime of the most
 	# recent file in the outputDir
-	isoDate = datetime.date.today().isoformat()
-	nntpDate = isoDate[2:4]+isoDate[5:7]+isoDate[8:10]
-	nntpTime = '000000'
+	date = datetime.date.today()
 
-	print(group)
-	print(nntpDate)
-	print(nntpTime)
-	print(connection.newnews(group, nntpDate, nntpTime))
+	print(connection.newnews(group, date))
 	connection.quit()
 	return
 
