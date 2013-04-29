@@ -1,19 +1,8 @@
 #!/usr/bin/python
 
 # ArcMesg, a program to archive e-mails and news, by Zoe Blade
-# Instructions:
-# Make a file ~/.arcmesgrc
-# Give it a list of POP3 and NNTP accounts in the format:
-# pop3\tservername\tusername\tpassword
-# nntp\tservername\tgroup
-# You can add comments by beginning a line with a # symbol
-# Run this script periodically with a cron job
-# The e-mails will be downloaded, stored in a Git-like hierarchy of files,
-# and deleted from the POP3 server.
-# The news will be downloaded and stored in the same manner.
-# This program is intended to be used with its own e-mail accounts,
-# which aren't shared with real e-mail clients.  It comes without warranty.
-# Please don't blame me if your e-mails go missing!
+# For Python 3
+# See README.creole for more information
 
 import csv, datetime, hashlib, nntplib, os, poplib, string
 
