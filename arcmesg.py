@@ -69,7 +69,7 @@ def getMessagesViaNntp(server, group):
 			writeMessage(message.lines)
 		except:
 			if errorLogFile:
-				errorLogFile.write('Discarding message ' + messageNumber + ' (Can\'t get message of that number)\n')
+				errorLogFile.write('Discarding message ' + str(messageNumber) + ' (Can\'t get message of that number)\n')
 
 	connection.quit()
 	return
@@ -107,13 +107,13 @@ for line in csv.reader(config, delimiter='\t'):
 		if len(line) != 2:
 			continue
 
-		downloadLogFile = open(os.path.expanduser(line[1]), 'w')
+		downloadLogFile = open(os.path.expanduser(line[1]), 'a')
 
 	elif command == 'ErrorLog':
 		if len(line) != 2:
 			continue
 
-		errorLogFile = open(os.path.expanduser(line[1]), 'w')
+		errorLogFile = open(os.path.expanduser(line[1]), 'a')
 
 	elif command == 'nntp':
 		if len(line) != 3:
