@@ -54,7 +54,10 @@ def writeMessage(lines):
 				except: # If we can't cope with a message, don't save it
 					messageFile.close()
 					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
-					print('Discarding message', hashedMessageID, messageID)
+
+					if errorLogFile:
+						errorLogFile.write('Discarding message', messageID, '(Can\'t decode)')
+
 					return
 
 			messageFile.close()
@@ -93,14 +96,24 @@ def getMessagesViaPop3(server, username, password, delete):
 	connection.quit()
 	return
 
+# Let's begin!
+errorLogFile = None
+
 config = open(os.path.expanduser(configFile))
 
 for line in csv.reader(config, delimiter='\t'):
-	if line[0][0] == '#':
+	if len(line) == 0 or line[0][0] == '#':
 		continue
 
-	protocol = line[0]
-	if protocol == 'nntp':
+	command = line[0]
+
+	if command == 'ErrorLog':
+		if len(line) != 2:
+			continue
+
+	errorLogFile = open(os.path.expanduser(line[1]), 'w')
+
+	if command == 'nntp':
 		if len(line) != 3:
 			continue
 
@@ -108,7 +121,7 @@ for line in csv.reader(config, delimiter='\t'):
 		group = line[2]
 		getMessagesViaNntp(server, group)
 
-	if protocol == 'pop3':
+	if command == 'pop3':
 		if len(line) < 4 or len(line) > 5:
 			continue
 
@@ -122,3 +135,6 @@ for line in csv.reader(config, delimiter='\t'):
 			delete = False
 
 		getMessagesViaPop3(server, username, password, delete)
+
+if errorLogFile:
+	errorLogFile.close()
