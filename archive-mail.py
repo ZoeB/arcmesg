@@ -11,15 +11,8 @@ if not os.path.exists(os.path.expanduser(configFile)):
 config = open(os.path.expanduser(configFile))
 
 for line in csv.reader(config, delimiter='\t'):
-	comment = False
+	if line[0][0] == '#' or len(line) != 3:
+		continue;
 
 	for item in line:
-		if item[0] == '#':
-			comment = True
-			break
-
-	if comment == True:
-		comment = False
-		continue
-
-	print(line)
+		print(item)
