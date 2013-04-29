@@ -15,12 +15,7 @@
 # which aren't shared with real e-mail clients.  It comes without warranty.
 # Please don't blame me if your e-mails go missing!
 
-import csv, datetime, hashlib, nntplib, os, poplib, string, sys
-
-for argument in sys.argv:
-	if (argument == '-d'):
-		debug = True
-		break
+import csv, datetime, hashlib, nntplib, os, poplib, string
 
 configFile = '~/.arcmesgrc'
 outputDir = '~/message-archive'
