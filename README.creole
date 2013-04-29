@@ -11,8 +11,10 @@ To use ArcMesg, set up a file in your home directory called
 retrieve, in the following tab-separated format:
 
 {{{
-# The optional error log file should appear before anything to be logged
+# The optional log files should appear before anything to be logged
+DownloadLog /var/log/arcmesg/download.log
 ErrorLog /var/log/arcmesg/error.log
+
 # You can specify as many servers as you like
 pop3	mail.example.com	alice	password	keep
 pop3	mail.example.com	bob	password	delete

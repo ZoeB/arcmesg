@@ -34,7 +34,10 @@ def writeMessage(lines):
 		if (splitMessageLine[0] == 'Message-ID:'):
 			messageID = splitMessageLine[1][1:-1]
 			hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
-			print('Downloading message', hashedMessageID)
+
+			if downloadLogFile:
+				downloadLogFile.write('Downloading message', hashedMessageID, messageID)
+
 			hashDir = hashedMessageID[:2]
 			hashFile = hashedMessageID[2:]
 
@@ -92,6 +95,7 @@ def getMessagesViaPop3(server, username, password, delete):
 	return
 
 # Let's begin!
+downloadLogFile = None
 errorLogFile = None
 
 config = open(os.path.expanduser(configFile))
@@ -102,13 +106,19 @@ for line in csv.reader(config, delimiter='\t'):
 
 	command = line[0]
 
-	if command == 'ErrorLog':
+	if command == 'DownloadLog':
 		if len(line) != 2:
 			continue
 
-	errorLogFile = open(os.path.expanduser(line[1]), 'w')
+		downloadLogFile = open(os.path.expanduser(line[1]), 'w')
 
-	if command == 'nntp':
+	elif command == 'ErrorLog':
+		if len(line) != 2:
+			continue
+
+		errorLogFile = open(os.path.expanduser(line[1]), 'w')
+
+	elif command == 'nntp':
 		if len(line) != 3:
 			continue
 
@@ -116,7 +126,7 @@ for line in csv.reader(config, delimiter='\t'):
 		group = line[2]
 		getMessagesViaNntp(server, group)
 
-	if command == 'pop3':
+	elif command == 'pop3':
 		if len(line) < 4 or len(line) > 5:
 			continue
 
