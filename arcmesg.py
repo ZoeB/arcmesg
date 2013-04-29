@@ -51,7 +51,11 @@ def writeMessage(lines):
 	return
 
 def getMessagesViaNntp(server, group):
-	connection = nntplib.NNTP(server)
+	try:
+		connection = nntplib.NNTP(server)
+	except:
+		if errorLogFile:
+			errorLogFile.write('Discarding server ' + server + ' (Can\'t connect)\n')
 
 	try:
 		groupInfo = connection.group(group)[0].split(' ')
@@ -75,10 +79,14 @@ def getMessagesViaNntp(server, group):
 	return
 
 def getMessagesViaPop3(server, username, password, delete):
-	connection = poplib.POP3(server)
-	connection.user(username)
-	connection.pass_(password)
-	list = connection.list()
+	try:
+		connection = poplib.POP3(server)
+		connection.user(username)
+		connection.pass_(password)
+		list = connection.list()
+	except:
+		if errorLogFile:
+			errorLogFile.write('Discarding server ' + server + ' (Can\'t connect)\n')
 
 	for emailNumber in list[1]:
 		emailNumberActual = emailNumber.decode().split(' ')[0]
