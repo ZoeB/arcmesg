@@ -10,7 +10,7 @@ if not os.path.exists(os.path.expanduser(configFile)):
 	exit()
 
 if not os.path.exists(os.path.expanduser(outputDir)):
-	os.mkdir(os.path.expanduser(outputDir), 0755)
+	os.mkdir(os.path.expanduser(outputDir), 0o755)
 
 config = open(os.path.expanduser(configFile))
 
@@ -28,25 +28,26 @@ for line in csv.reader(config, delimiter='\t'):
 	list = connection.list()
 
 	for emailNumber in list[1]:
-		email = connection.retr(emailNumber[0])
+		emailNumberActual = emailNumber.decode().split(' ')[0]
+		email = connection.retr(emailNumberActual)
 
 		for emailLine in email[1]:
-			splitEmailLine = string.split(emailLine, ' ')
+			splitEmailLine = emailLine.decode().split(' ')
 
 			if (splitEmailLine[0] == 'Message-ID:'):
 				messageID = splitEmailLine[1][1:-1]
-				hashedMessageID = hashlib.sha1(messageID).hexdigest()
+				hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
 				print('Downloading message', hashedMessageID)
 				hashDir = hashedMessageID[:2]
 				hashFile = hashedMessageID[2:]
 
 				if not os.path.exists(os.path.expanduser(outputDir+'/'+hashDir)):
-					os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0755)
+					os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0o755)
 
 				emailFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
 
 				for emailLineAgain in email[1]:
-					emailFile.write(emailLineAgain+'\n')
+					emailFile.write(emailLineAgain.decode()+'\n')
 
 				emailFile.close()
 				# connection.dele(emailNumber[0])
