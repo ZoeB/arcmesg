@@ -29,7 +29,7 @@ read in these places, storing them all in a directory called
 
 === To do ===
 
-* Write errors to a log file, not the screen
+* Write all kinds of errors to the log file
 * Allow configuration file overriding of message repository directory
 * Don't get the same message multiple times
 * Write import and export tools
