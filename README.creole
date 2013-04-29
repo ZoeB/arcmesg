@@ -11,11 +11,14 @@ To use ArcMesg, set up a file in your home directory called
 retrieve, in the following tab-separated format:
 
 {{{
-pop3	mail.example.com	username	password
+pop3	mail.example.com	alice	password	keep
+pop3	mail.example.com	bob	password	delete
 nntp	news.example.com	example.groupname
 }}}
 
-Any combination of POP3 and news servers is allowed.
+Any combination of POP3 and news servers is allowed.  In the case
+of POP3, you should specify whether or not you want to delete messages
+after downloading them.  The default action is to keep them.
 
 When you run the script, it will archive all the messages it can
 read in these places, storing them all in a directory called
@@ -23,8 +26,8 @@ read in these places, storing them all in a directory called
 
 === To do ===
 
-* Use {{{argparse}}}
 * Write errors to a log file, not the screen
+* Allow configuration file overriding of message repository directory
 * Don't get the same message multiple times
 * Write import and export tools
 * Port to C

@@ -11,14 +11,11 @@
 # The e-mails will be downloaded, stored in a Git-like hierarchy of files,
 # and deleted from the POP3 server.
 # The news will be downloaded and stored in the same manner.
-# Use the -d argument for debug mode, to avoid deleting e-mails.
 # This program is intended to be used with its own e-mail accounts,
 # which aren't shared with real e-mail clients.  It comes without warranty.
 # Please don't blame me if your e-mails go missing!
 
 import csv, datetime, hashlib, nntplib, os, poplib, string, sys
-
-debug = False
 
 for argument in sys.argv:
 	if (argument == '-d'):
@@ -63,7 +60,7 @@ def writeMessage(lines):
 			messageFile.close()
 	return
 
-def getMessagesViaNntp(server, group, debug):
+def getMessagesViaNntp(server, group):
 	connection = nntplib.NNTP(server)
 	groupInfo = connection.group(group)[0].split(' ')
 	firstMessageNumber = int(groupInfo[2])
@@ -79,7 +76,7 @@ def getMessagesViaNntp(server, group, debug):
 	connection.quit()
 	return
 
-def getMessagesViaPop3(server, username, password, debug):
+def getMessagesViaPop3(server, username, password, delete):
 	connection = poplib.POP3(server)
 	connection.user(username)
 	connection.pass_(password)
@@ -90,7 +87,7 @@ def getMessagesViaPop3(server, username, password, debug):
 		email = connection.retr(emailNumberActual)
 		writeMessage(email[1])
 
-		if (debug == False):
+		if (delete == True):
 			connection.dele(emailNumberActual)
 
 	connection.quit()
@@ -109,13 +106,19 @@ for line in csv.reader(config, delimiter='\t'):
 
 		server = line[1]
 		group = line[2]
-		getMessagesViaNntp(server, group, debug)
+		getMessagesViaNntp(server, group)
 
 	if protocol == 'pop3':
-		if len(line) != 4:
+		if len(line) < 4 or len(line) > 5:
 			continue
 
 		server = line[1]
 		username = line[2]
 		password = line[3]
-		getMessagesViaPop3(server, username, password, debug)
+
+		if len(line) > 4 and line[4] == 'delete':
+			delete = True
+		else:
+			delete = False
+
+		getMessagesViaPop3(server, username, password, delete)
