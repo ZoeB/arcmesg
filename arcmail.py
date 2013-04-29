@@ -1,5 +1,17 @@
 #!/usr/bin/python
 
+# ArcMail, a program to archive e-mails, by Zoe Blade
+# Instructions:
+# Make a file ~/.arcmailrc
+# Give it a list of POP3 accounts in the format servername\tusername\tpassword
+# You can add comments by beginning a line with a # symbol
+# Run this script periodically with a cron job
+# The e-mails will be downloaded, stored in a Git-like hierarchy of files,
+# and deleted from the POP3 server.
+# This program is intended to be used with its own e-mail accounts,
+# which aren't shared with real e-mail clients.  It comes without warranty.
+# Please don't blame me if your e-mails go missing!
+
 import csv, hashlib, os, poplib, string
 
 configFile = '~/.arcmailrc'
