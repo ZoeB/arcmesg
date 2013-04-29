@@ -25,7 +25,7 @@ def writeMessage(lines):
 			hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
 
 			if downloadLogFile:
-				downloadLogFile.write('Downloading message ' + hashedMessageID + ' ' + messageID + '\n')
+				downloadLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' ' + messageID + '\n')
 
 			hashDir = hashedMessageID[:2]
 			hashFile = hashedMessageID[2:]
@@ -43,7 +43,7 @@ def writeMessage(lines):
 					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
 
 					if errorLogFile:
-						errorLogFile.write('Discarding message ' + messageID + ' (Can\'t decode)\n')
+						errorLogFile.write(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
 
 					return
 
@@ -55,7 +55,7 @@ def getMessagesViaNntp(server, group):
 		connection = nntplib.NNTP(server)
 	except:
 		if errorLogFile:
-			errorLogFile.write('Discarding server ' + server + ' (Can\'t connect)\n')
+			errorLogFile.write(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
 
 	try:
 		groupInfo = connection.group(group)[0].split(' ')
@@ -63,7 +63,7 @@ def getMessagesViaNntp(server, group):
 		lastMessageNumber = int(groupInfo[3])
 	except:
 		if errorLogFile:
-			errorLogFile.write('Discarding group ' + group + ' (Can\'t get list of messages)\n')
+			errorLogFile.write(datetime.datetime.utcnow())[:-7] + ' Discarding group ' + group + ' (Can\'t get list of messages)\n')
 
 		return
 
@@ -73,7 +73,7 @@ def getMessagesViaNntp(server, group):
 			writeMessage(message.lines)
 		except:
 			if errorLogFile:
-				errorLogFile.write('Discarding message ' + str(messageNumber) + ' (Can\'t get message of that number)\n')
+				errorLogFile.write(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
 
 	connection.quit()
 	return
@@ -86,7 +86,7 @@ def getMessagesViaPop3(server, username, password, delete):
 		list = connection.list()
 	except:
 		if errorLogFile:
-			errorLogFile.write('Discarding server ' + server + ' (Can\'t connect)\n')
+			errorLogFile.write(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
 
 	for emailNumber in list[1]:
 		emailNumberActual = emailNumber.decode().split(' ')[0]
