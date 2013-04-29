@@ -1,0 +1,6 @@
+== ArcMesg ==
+
+=== To do ===
+
+* Use {{{argparse}}}
+* Write errors to a log file, not the screen
