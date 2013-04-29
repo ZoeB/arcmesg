@@ -25,7 +25,7 @@ def writeMessage(lines):
 			hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
 
 			if downloadLogFile:
-				downloadLogFile.write('Downloading message', hashedMessageID, messageID)
+				downloadLogFile.write('Downloading message ' + hashedMessageID + ' ' + messageID + '\n')
 
 			hashDir = hashedMessageID[:2]
 			hashFile = hashedMessageID[2:]
@@ -37,13 +37,13 @@ def writeMessage(lines):
 
 			for messageLineAgain in lines:
 				try:
-					messageFile.write(messageLineAgain.decode()+'\n')
+					messageFile.write(messageLineAgain.decode() + '\n')
 				except: # If we can't cope with a message, don't save it
 					messageFile.close()
 					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
 
 					if errorLogFile:
-						errorLogFile.write('Discarding message', messageID, '(Can\'t decode)')
+						errorLogFile.write('Discarding message ' + messageID + ' (Can\'t decode)\n')
 
 					return
 
@@ -59,7 +59,7 @@ def getMessagesViaNntp(server, group):
 		lastMessageNumber = int(groupInfo[3])
 	except:
 		if errorLogFile:
-			errorLogFile.write('Discarding group', group, '(Can\'t get list of messages)')
+			errorLogFile.write('Discarding group ' + group + ' (Can\'t get list of messages)\n')
 
 		return
 
@@ -69,7 +69,7 @@ def getMessagesViaNntp(server, group):
 			writeMessage(message.lines)
 		except:
 			if errorLogFile:
-				errorLogFile.write('Discarding message', messageNumber, '(Can\'t get message of that number)')
+				errorLogFile.write('Discarding message ' + messageNumber + ' (Can\'t get message of that number)\n')
 
 	connection.quit()
 	return
