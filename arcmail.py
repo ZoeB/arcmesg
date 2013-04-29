@@ -24,4 +24,7 @@ for line in csv.reader(config, delimiter='\t'):
 	list = connection.list()
 
 	for emailNumber in list[1]:
-		print(connection.retr(emailNumber[0]))
+		email = connection.retr(emailNumber[0])
+
+		for emailLine in email[1]:
+			print(emailLine)
