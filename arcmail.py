@@ -2,7 +2,7 @@
 
 import csv, os
 
-configFile = '~/.archive-mail'
+configFile = '~/.arcmailrc'
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile);
