@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import csv, os
+import csv, os, poplib
 
 configFile = '~/.arcmailrc'
 
@@ -14,5 +14,14 @@ for line in csv.reader(config, delimiter='\t'):
 	if line[0][0] == '#' or len(line) != 3:
 		continue;
 
-	for item in line:
-		print(item)
+	server = line[0]
+	username = line[1]
+	password = line[2]
+
+	connection = poplib.POP3(server)
+	connection.user(username)
+	connection.pass_(password)
+	list = connection.list()
+
+	for emailNumber in list[1]:
+		print(connection.retr(emailNumber[0]))
