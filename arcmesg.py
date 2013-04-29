@@ -63,16 +63,24 @@ def writeMessage(lines):
 
 def getMessagesViaNntp(server, group):
 	connection = nntplib.NNTP(server)
-	groupInfo = connection.group(group)[0].split(' ')
-	firstMessageNumber = int(groupInfo[2])
-	lastMessageNumber = int(groupInfo[3])
+
+	try:
+		groupInfo = connection.group(group)[0].split(' ')
+		firstMessageNumber = int(groupInfo[2])
+		lastMessageNumber = int(groupInfo[3])
+	except:
+		if errorLogFile:
+			errorLogFile.write('Discarding group', group, '(Can\'t get list of messages)')
+
+		return
 
 	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
 		try:
 			message = connection.article(messageNumber)[1]
 			writeMessage(message.lines)
 		except:
-			pass
+			if errorLogFile:
+				errorLogFile.write('Discarding message', messageNumber, '(Can\'t get message of that number)')
 
 	connection.quit()
 	return
