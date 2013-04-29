@@ -14,7 +14,7 @@
 # which aren't shared with real e-mail clients.  It comes without warranty.
 # Please don't blame me if your e-mails go missing!
 
-import csv, hashlib, os, poplib, string, sys
+import csv, datetime, hashlib, nntplib, os, poplib, string, sys
 
 debug = False
 
@@ -33,19 +33,22 @@ if not os.path.exists(os.path.expanduser(configFile)):
 if not os.path.exists(os.path.expanduser(outputDir)):
 	os.mkdir(os.path.expanduser(outputDir), 0o755)
 
-config = open(os.path.expanduser(configFile))
+def getMessagesViaNntp(server, group, debug):
+	connection = nntplib.NNTP(server)
+	#connection.group(group)
 
-for line in csv.reader(config, delimiter='\t'):
-	if line[0][0] == '#' or len(line) != 4:
-		continue
+	# I should improve this, eg automatically use the datetime of the most
+	# recent file in the outputDir
+	isoDate = datetime.date.today().isoformat()
+	nntpDate = isoDate[2:4]+isoDate[5:7]+isoDate[8:10]
+	nntpTime = '000000'
 
-	protocol = line[0]
-	server = line[1]
-	username = line[2]
-	password = line[3]
-
-	if protocol == 'pop3':
-		getMessagesViaPop3(server, username, password, debug)
+	print(group)
+	print(nntpDate)
+	print(nntpTime)
+	print(connection.newnews(group, nntpDate, nntpTime))
+	connection.quit()
+	return
 
 def getMessagesViaPop3(server, username, password, debug):
 	connection = poplib.POP3(server)
@@ -83,3 +86,28 @@ def getMessagesViaPop3(server, username, password, debug):
 				break
 
 	connection.quit()
+	return
+
+config = open(os.path.expanduser(configFile))
+
+for line in csv.reader(config, delimiter='\t'):
+	if line[0][0] == '#':
+		continue
+
+	protocol = line[0]
+	if protocol == 'nntp':
+		if len(line) != 3:
+			continue
+
+		server = line[1]
+		group = line[2]
+		getMessagesViaNntp(server, group, debug)
+
+	if protocol == 'pop3':
+		if len(line) != 4:
+			continue
+
+		server = line[1]
+		username = line[2]
+		password = line[3]
+		getMessagesViaPop3(server, username, password, debug)
