@@ -8,11 +8,19 @@
 # Run this script periodically with a cron job
 # The e-mails will be downloaded, stored in a Git-like hierarchy of files,
 # and deleted from the POP3 server.
+# Use the -d argument for debug mode, to avoid deleting e-mails.
 # This program is intended to be used with its own e-mail accounts,
 # which aren't shared with real e-mail clients.  It comes without warranty.
 # Please don't blame me if your e-mails go missing!
 
-import csv, hashlib, os, poplib, string
+import csv, hashlib, os, poplib, string, sys
+
+debug = False
+
+for argument in sys.argv:
+	if (argument == '-d'):
+		debug = True
+		break
 
 configFile = '~/.arcmailrc'
 outputDir = '~/email-archive'
@@ -62,7 +70,10 @@ for line in csv.reader(config, delimiter='\t'):
 					emailFile.write(emailLineAgain.decode()+'\n')
 
 				emailFile.close()
-				connection.dele(emailNumberActual)
+
+				if (debug == False):
+					connection.dele(emailNumberActual)
+
 				break
 
 	connection.quit()
