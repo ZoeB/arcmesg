@@ -2,7 +2,7 @@
 
 # ArcMail, a program to archive e-mails, by Zoe Blade
 # Instructions:
-# Make a file ~/.arcmailrc
+# Make a file ~/.arcmesgrc
 # Give it a list of POP3 accounts in the format:
 # protocol\tservername\tusername\tpassword
 # You can add comments by beginning a line with a # symbol
@@ -23,8 +23,8 @@ for argument in sys.argv:
 		debug = True
 		break
 
-configFile = '~/.arcmailrc'
-outputDir = '~/email-archive'
+configFile = '~/.arcmesgrc'
+outputDir = '~/message-archive'
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
