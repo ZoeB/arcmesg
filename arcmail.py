@@ -3,7 +3,8 @@
 # ArcMail, a program to archive e-mails, by Zoe Blade
 # Instructions:
 # Make a file ~/.arcmailrc
-# Give it a list of POP3 accounts in the format servername\tusername\tpassword
+# Give it a list of POP3 accounts in the format:
+# protocol\tservername\tusername\tpassword
 # You can add comments by beginning a line with a # symbol
 # Run this script periodically with a cron job
 # The e-mails will be downloaded, stored in a Git-like hierarchy of files,
@@ -35,13 +36,18 @@ if not os.path.exists(os.path.expanduser(outputDir)):
 config = open(os.path.expanduser(configFile))
 
 for line in csv.reader(config, delimiter='\t'):
-	if line[0][0] == '#' or len(line) != 3:
+	if line[0][0] == '#' or len(line) != 4:
 		continue
 
-	server = line[0]
-	username = line[1]
-	password = line[2]
+	protocol = line[0]
+	server = line[1]
+	username = line[2]
+	password = line[3]
 
+	if protocol == 'pop3':
+		getMessagesViaPop3(server, username, password, debug)
+
+def getMessagesViaPop3(server, username, password, debug):
 	connection = poplib.POP3(server)
 	connection.user(username)
 	connection.pass_(password)
