@@ -7,14 +7,11 @@
 import csv, datetime, hashlib, nntplib, os, poplib, string
 
 configFile = '~/.arcmesgrc'
-outputDir = '~/message-archive'
+messageDir = '~/message-archive'
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
 	exit()
-
-if not os.path.exists(os.path.expanduser(outputDir)):
-	os.mkdir(os.path.expanduser(outputDir), 0o755)
 
 def writeMessage(lines):
 	for line in lines:
@@ -30,17 +27,20 @@ def writeMessage(lines):
 			hashDir = hashedMessageID[:2]
 			hashFile = hashedMessageID[2:]
 
-			if not os.path.exists(os.path.expanduser(outputDir+'/'+hashDir)):
-				os.mkdir(os.path.expanduser(outputDir+'/'+hashDir), 0o755)
+			if not os.path.exists(os.path.expanduser(messageDir)):
+				os.mkdir(os.path.expanduser(messageDir), 0o755)
 
-			messageFile = open(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile), 'w')
+			if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir)):
+				os.mkdir(os.path.expanduser(messageDir+'/'+hashDir), 0o755)
+
+			messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile), 'w')
 
 			for messageLineAgain in lines:
 				try:
 					messageFile.write(messageLineAgain.decode() + '\n')
 				except: # If we can't cope with a message, don't save it
 					messageFile.close()
-					os.unlink(os.path.expanduser(outputDir+'/'+hashDir+'/'+hashFile))
+					os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
 
 					if errorLogFile:
 						errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
@@ -111,7 +111,13 @@ for line in csv.reader(config, delimiter='\t'):
 
 	command = line[0]
 
-	if command == 'DownloadLog':
+	if command == 'DocumentRoot':
+		if len(line) != 2:
+			continue
+
+		messageDir = line[1]
+
+	elif command == 'DownloadLog':
 		if len(line) != 2:
 			continue
 

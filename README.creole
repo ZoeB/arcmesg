@@ -11,9 +11,13 @@ To use ArcMesg, set up a file in your home directory called
 retrieve, in the following tab-separated format:
 
 {{{
+# The optional custom message repository directory should appear
+# before the things you want to put in it
+DocumentRoot	~/mesg
+
 # The optional log files should appear before anything to be logged
-DownloadLog /var/log/arcmesg/download.log
-ErrorLog /var/log/arcmesg/error.log
+DownloadLog	/var/log/arcmesg/download.log
+ErrorLog	/var/log/arcmesg/error.log
 
 # You can specify as many servers as you like
 pop3	mail.example.com	alice	password	keep
@@ -32,7 +36,6 @@ read in these places, storing them all in a directory called
 === To do ===
 
 * Write all kinds of errors to the error log file
-* Allow configuration file overriding of message repository directory
 * Don't get the same message multiple times
 * Write import and export tools (mbox format etc)
 * Port to C
