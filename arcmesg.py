@@ -25,7 +25,8 @@ def writeMessage(lines):
 				downloadLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' ' + messageID + '\n')
 
 			hashDir = hashedMessageID[:2]
-			hashFile = hashedMessageID[2:]
+			hashSubdir = hashedMessageID[2:4]
+			hashFile = hashedMessageID[4:]
 
 			if not os.path.exists(os.path.expanduser(messageDir)):
 				os.mkdir(os.path.expanduser(messageDir), 0o755)
@@ -33,7 +34,10 @@ def writeMessage(lines):
 			if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir)):
 				os.mkdir(os.path.expanduser(messageDir+'/'+hashDir), 0o755)
 
-			messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile), 'w')
+			if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir)):
+				os.mkdir(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir), 0o755)
+
+			messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile), 'w')
 
 			for messageLineAgain in lines:
 				try:
