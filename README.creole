@@ -37,6 +37,9 @@ read in these places, storing them all in a directory called
 
 * Fix downloading of messages that don't currently work
 * Write all kinds of errors to the error log file
-* Support NNTP's NEWNEWS command
+* Don't overwrite existing messages.  Preferably don't get them either.
+** Support NNTP's NEWNEWS command
+** At least consider getting headers first, in order to avoid getting duplicates, although it would mean downloading //more// data if they're not duplicates after all, or downloading the headers and bodies separately and stitching them back together, which doesn't feel like it's in the spirit of preservation
+* Support authenticated NNTP connections
 * Write import and export tools (mbox format etc)
 * Port to C
