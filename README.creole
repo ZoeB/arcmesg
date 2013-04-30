@@ -19,10 +19,10 @@ DocumentRoot	~/mesg
 DownloadLog	/var/log/arcmesg/download.log
 ErrorLog	/var/log/arcmesg/error.log
 
-# You can specify as many servers as you like
-pop3	mail.example.com	alice	password	keep
-pop3	mail.example.com	bob	password	delete
-nntp	news.example.com	example.groupname
+# You can specify as many servers to pull messages from as you like
+Pull	pop3	mail.example.com	alice	password	keep
+Pull	pop3	mail.example.com	bob	password	delete
+Pull	nntp	news.example.com	example.groupname
 }}}
 
 Any combination of POP3 and news servers is allowed.  In the case

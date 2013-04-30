@@ -129,28 +129,34 @@ for line in csv.reader(config, delimiter='\t'):
 
 		errorLogFile = open(os.path.expanduser(line[1]), 'a')
 
-	elif command == 'nntp':
-		if len(line) != 3:
+	elif command == 'Pull':
+		if len(line) < 4:
 			continue
 
-		server = line[1]
-		group = line[2]
-		getMessagesViaNntp(server, group)
+		protocol = line[1]
 
-	elif command == 'pop3':
-		if len(line) < 4 or len(line) > 5:
-			continue
+		if protocol == 'nntp':
+			if len(line) != 4:
+				continue
 
-		server = line[1]
-		username = line[2]
-		password = line[3]
+			server = line[2]
+			group = line[3]
+			getMessagesViaNntp(server, group)
 
-		if len(line) > 4 and line[4] == 'delete':
-			delete = True
-		else:
-			delete = False
+		elif protocol == 'pop3':
+			if len(line) < 5 or len(line) > 6:
+				continue
 
-		getMessagesViaPop3(server, username, password, delete)
+			server = line[2]
+			username = line[3]
+			password = line[4]
+
+			if len(line) > 5 and line[5] == 'delete':
+				delete = True
+			else:
+				delete = False
+
+			getMessagesViaPop3(server, username, password, delete)
 
 if errorLogFile:
 	errorLogFile.close()
