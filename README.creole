@@ -36,6 +36,6 @@ read in these places, storing them all in a directory called
 === To do ===
 
 * Write all kinds of errors to the error log file
-* Don't get the same message multiple times
+* Support NNTP's NEWNEWS command (I'll need help with this one as my ISP's news server doesn't support it)
 * Write import and export tools (mbox format etc)
 * Port to C
