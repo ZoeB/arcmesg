@@ -121,9 +121,8 @@ def getMessagesViaNntp(server, group):
 
 			continue
 
-		messageBody = connection.body(messageNumber)[1]
-		message = messageHead.lines, '', messageBody.lines #TODO: Fix!
-		writeMessage(message)
+		message = connection.article(messageNumber)[1] # TODO: Rewrite this to only get the body, and manually stitch them back together, after verifying it's reliably safe by comparing the SHA1s of messages both downloaded whole and reassembled
+		writeMessage(message.lines)
 
 	connection.quit()
 	return
