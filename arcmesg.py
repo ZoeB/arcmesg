@@ -100,10 +100,7 @@ def writeMessage(message, messageBody = None):
 	messageFile.close()
 	return None
 
-def getMessagesViaNntp(server, username = None, password = None, group = None):
-	if group == None: #TODO: implement automatic ripping of all groups on the server (and "groups" with wildcards for that matter, eg sci.*)
-		return None
-
+def getMessagesViaNntp(server, group, username = None, password = None):
 	try:
 		connection = nntplib.NNTP(server, 119, username, password)
 	except:
@@ -212,25 +209,12 @@ for line in csv.reader(config, delimiter='\t'):
 		protocol = line[1]
 
 		if protocol == 'nntp':
-			if len(line) < 3 or len(line) > 6:
-				continue
-
-			server = line[2]
-			username = None
-			password = None
-			group = None
-
-			if len(line) == 6:
-				username = line[3]
-				password = line[4]
-				group = line[5]
-			elif len(line) == 5:
-				username = line[3]
-				password = line[4]
-			elif len(line) == 4:
-				group = line[3]
-
-			getMessagesViaNntp(server, username, password, group)
+			if len(line) == 4:
+				getMessagesViaNntp(line[2], line[3])
+			elif len(line) == 6:
+				getMessagesViaNntp(line[2], line[5], line[3], line[4])
+			else:
+				pass
 
 		elif protocol == 'pop3':
 			if len(line) < 5 or len(line) > 6:
