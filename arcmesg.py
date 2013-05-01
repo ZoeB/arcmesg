@@ -72,12 +72,16 @@ def getMessagesViaNntp(server, group):
 		return
 
 	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
+		message = None
+
 		try:
 			message = connection.article(messageNumber)[1]
-			writeMessage(message.lines)
 		except:
 			if errorLogFile:
 				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
+
+		if message:
+			writeMessage(message.lines)
 
 	connection.quit()
 	return
