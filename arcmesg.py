@@ -13,46 +13,68 @@ if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
 	exit()
 
-def writeMessage(lines):
-	for line in lines:
+def getMessageID(message):
+	for line in message:
 		splitMessageLine = line.decode('latin-1').split(' ')
 
 		if (splitMessageLine[0] == 'Message-ID:'):
-			messageID = splitMessageLine[1][1:-1]
-			hashedMessageID = hashlib.sha1(messageID.encode()).hexdigest()
+			return splitMessageLine[1][1:-1]
 
-			if downloadLogFile:
-				downloadLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' ' + messageID + '\n')
+	return None
 
-			hashDir = hashedMessageID[:2]
-			hashSubdir = hashedMessageID[2:4]
-			hashFile = hashedMessageID[4:]
+def hashMessageID(messageID):
+	if not messageID:
+		return None
 
-			if not os.path.exists(os.path.expanduser(messageDir)):
-				os.mkdir(os.path.expanduser(messageDir), 0o755)
+	return hashlib.sha1(messageID.encode()).hexdigest()
 
-			if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir)):
-				os.mkdir(os.path.expanduser(messageDir+'/'+hashDir), 0o755)
+def messageAlreadyArchived(hashedMessageID):
+	hashDir = hashedMessageID[:2]
+	hashSubdir = hashedMessageID[2:4]
+	hashFile = hashedMessageID[4:]
+	messageFilename = os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile)
+	return os.path.exists(messageFilename)
 
-			if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir)):
-				os.mkdir(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir), 0o755)
+def writeMessage(message):
+	messageID = getMessageID(message)
 
-			messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile), 'w')
+	if not messageID:
+		return None
 
-			for messageLineAgain in lines:
-				try:
-					messageFile.write(messageLineAgain.decode('latin-1') + '\n')
-				except: # If we can't cope with a message, don't save it
-					messageFile.close()
-					os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
+	hashedMessageID = hashMessageID(messageID)
 
-					if errorLogFile:
-						errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
+	if downloadLogFile:
+		downloadLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' ' + messageID + '\n')
 
-					return
+	hashDir = hashedMessageID[:2]
+	hashSubdir = hashedMessageID[2:4]
+	hashFile = hashedMessageID[4:]
 
+	if not os.path.exists(os.path.expanduser(messageDir)):
+		os.mkdir(os.path.expanduser(messageDir), 0o755)
+
+	if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir)):
+		os.mkdir(os.path.expanduser(messageDir+'/'+hashDir), 0o755)
+
+	if not os.path.exists(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir)):
+		os.mkdir(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir), 0o755)
+
+	messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile), 'w')
+
+	for line in message:
+		try:
+			messageFile.write(line.decode('latin-1') + '\n')
+		except: # If we can't cope with a message, don't save it
 			messageFile.close()
-	return
+			os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
+
+			if errorLogFile:
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
+
+			return None
+
+	messageFile.close()
+	return None
 
 def getMessagesViaNntp(server, group):
 	try:
@@ -73,15 +95,34 @@ def getMessagesViaNntp(server, group):
 
 	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
 		message = None
+		messageHead = None
 
 		try:
-			message = connection.article(messageNumber)[1]
+			messageHead = connection.head(messageNumber)[1]
 		except:
 			if errorLogFile:
 				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
 
-		if message:
-			writeMessage(message.lines)
+			continue
+
+		messageID = getMessageID(messageHead.lines)
+
+		if not messageID:
+			if errorLogFile:
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t find message ID)\n')
+
+			continue
+
+		hashedMessageID = hashMessageID(messageID)
+
+		if messageAlreadyArchived(hashedMessageID):
+			if errorLogFile:
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Duplicate)\n')
+
+			continue
+
+		message = connection.article(messageNumber)[1] # TODO: Rewrite this to only get the body, and manually stitch them back together, after verifying it's reliably safe by comparing the SHA1s of messages both downloaded whole and reassembled
+		writeMessage(message.lines)
 
 	connection.quit()
 	return
