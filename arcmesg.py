@@ -107,46 +107,52 @@ def getMessagesViaNntp(server, group, username = None, password = None):
 		if errorLogFile:
 			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
 
-	try:
-		groupInfo = connection.group(group)[0].split(' ')
-		firstMessageNumber = int(groupInfo[2])
-		lastMessageNumber = int(groupInfo[3])
-	except:
-		if errorLogFile:
-			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding group ' + group + ' (Can\'t get list of messages)\n')
+	if group[-1] == '*':
+		groups = list(connection.descriptions(group)[1].keys())
+	else:
+		groups = [group]
 
-		return
-
-	for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
-		message = None
-		messageHead = None
-
+	for group in groups:
 		try:
-			messageHead = connection.head(messageNumber)[1]
+			groupInfo = connection.group(group)[0].split(' ')
+			firstMessageNumber = int(groupInfo[2])
+			lastMessageNumber = int(groupInfo[3])
 		except:
 			if errorLogFile:
-				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding group ' + group + ' (Can\'t get list of messages)\n')
 
-			continue
+			return
 
-		messageID = getMessageID(messageHead.lines)
+		for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
+			message = None
+			messageHead = None
 
-		if not messageID:
-			if errorLogFile:
-				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t find message ID)\n')
+			try:
+				messageHead = connection.head(messageNumber)[1]
+			except:
+				if errorLogFile:
+					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
 
-			continue
+				continue
 
-		hashedMessageID = hashMessageID(messageID)
+			messageID = getMessageID(messageHead.lines)
 
-		if messageAlreadyArchived(hashedMessageID):
-			if errorLogFile:
-				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Duplicate)\n')
+			if not messageID:
+				if errorLogFile:
+					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t find message ID)\n')
 
-			continue
+				continue
 
-		messageBody = connection.body(messageNumber)[1]
-		writeMessage(messageHead.lines, messageBody.lines)
+			hashedMessageID = hashMessageID(messageID)
+
+			if messageAlreadyArchived(hashedMessageID):
+				if errorLogFile:
+					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Duplicate)\n')
+
+				continue
+
+			messageBody = connection.body(messageNumber)[1]
+			writeMessage(messageHead.lines, messageBody.lines)
 
 	connection.quit()
 	return
