@@ -35,7 +35,7 @@ def messageAlreadyArchived(hashedMessageID):
 	messageFilename = os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile)
 	return os.path.exists(messageFilename)
 
-def writeMessage(message):
+def writeMessage(message, messageBody):
 	messageID = getMessageID(message)
 
 	if not messageID:
@@ -62,6 +62,24 @@ def writeMessage(message):
 	messageFile = open(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile), 'w')
 
 	for line in message:
+		try:
+			messageFile.write(line.decode('latin-1') + '\n')
+		except: # If we can't cope with a message, don't save it
+			messageFile.close()
+			os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
+
+			if errorLogFile:
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
+
+			return None
+
+	if not messageBody:
+		messageFile.close()
+		return None
+
+	messageFile.write('\n')
+
+	for line in messageBody:
 		try:
 			messageFile.write(line.decode('latin-1') + '\n')
 		except: # If we can't cope with a message, don't save it
@@ -121,8 +139,8 @@ def getMessagesViaNntp(server, group):
 
 			continue
 
-		message = connection.article(messageNumber)[1] # TODO: Rewrite this to only get the body, and manually stitch them back together, after verifying it's reliably safe by comparing the SHA1s of messages both downloaded whole and reassembled
-		writeMessage(message.lines)
+		messageBody = connection.body(messageNumber)[1]
+		writeMessage(messageHead.lines, messageBody.lines)
 
 	connection.quit()
 	return

@@ -37,9 +37,8 @@ read in these places, storing them all in a directory called
 
 * Fix downloading of messages that don't currently work
 * Write all kinds of errors to the error log file
-* Don't overwrite existing messages.  Preferably don't get them either.
-** Support NNTP's NEWNEWS command
-** Download the headers and bodies separately and stitch them back together, after verifying with SHA1s that it's safe
+* Don't overwrite existing POP3 messages.  Preferably don't get them either.
+* Support NNTP's NEWNEWS command
 * Support authenticated NNTP connections
 * Write import and export tools (mbox format etc)
 * Port to C
