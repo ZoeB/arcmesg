@@ -35,7 +35,7 @@ def messageAlreadyArchived(hashedMessageID):
 	messageFilename = os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile)
 	return os.path.exists(messageFilename)
 
-def writeMessage(message, messageBody):
+def writeMessage(message, messageBody = None):
 	messageID = getMessageID(message)
 
 	if not messageID:
