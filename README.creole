@@ -22,7 +22,8 @@ ErrorLog	/var/log/arcmesg/error.log
 # You can specify as many servers to pull messages from as you like
 Pull	pop3	mail.example.com	alice	password	keep
 Pull	pop3	mail.example.com	bob	password	delete
-Pull	nntp	news.example.com	example.groupname
+Pull	nntp	public-news.example.com	example.groupname
+Pull	nntp	private-news.example.com	alice	password	example.groupname
 }}}
 
 Any combination of POP3 and news servers is allowed.  In the case
@@ -39,6 +40,5 @@ read in these places, storing them all in a directory called
 * Write all kinds of errors to the error log file
 * Don't overwrite existing POP3 messages.  Preferably don't get them either.
 * Support NNTP's NEWNEWS command
-* Support authenticated NNTP connections
 * Write import and export tools (mbox format etc)
 * Port to C
