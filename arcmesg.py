@@ -15,7 +15,7 @@ if not os.path.exists(os.path.expanduser(configFile)):
 
 def writeMessage(lines):
 	for line in lines:
-		splitMessageLine = line.decode().split(' ')
+		splitMessageLine = line.decode('latin-1').split(' ')
 
 		if (splitMessageLine[0] == 'Message-ID:'):
 			messageID = splitMessageLine[1][1:-1]
@@ -41,7 +41,7 @@ def writeMessage(lines):
 
 			for messageLineAgain in lines:
 				try:
-					messageFile.write(messageLineAgain.decode() + '\n')
+					messageFile.write(messageLineAgain.decode('latin-1') + '\n')
 				except: # If we can't cope with a message, don't save it
 					messageFile.close()
 					os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
@@ -97,7 +97,7 @@ def getMessagesViaPop3(server, username, password, delete):
 			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
 
 	for emailNumber in list[1]:
-		emailNumberActual = emailNumber.decode().split(' ')[0]
+		emailNumberActual = emailNumber.decode('latin-1').split(' ')[0]
 		email = connection.retr(emailNumberActual)
 		writeMessage(email[1])
 
