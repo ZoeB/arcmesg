@@ -15,10 +15,10 @@ if not os.path.exists(os.path.expanduser(configFile)):
 
 def getMessageID(message):
 	for line in message:
-		splitMessageLine = line.decode('latin-1').split(' ')
+		splitLine = line.decode('latin-1').split(' ')
 
-		if (splitMessageLine[0] == 'Message-ID:'):
-			return splitMessageLine[1][1:-1]
+		if (splitLine[0] == 'Message-ID:'):
+			return splitLine[1][1:-1]
 
 	return None
 
@@ -236,6 +236,9 @@ for line in csv.reader(config, delimiter='\t'):
 				delete = False
 
 			getMessagesViaPop3(server, username, password, delete)
+
+if downloadLogFile:
+	downloadLogFile.close()
 
 if errorLogFile:
 	errorLogFile.close()
