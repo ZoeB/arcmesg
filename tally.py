@@ -4,10 +4,14 @@
 # For Python 3
 # See README.creole for more information
 
-import csv, os, string
+import csv, os, string, sys
 
 configFile = '~/.arcmesgrc'
 messageDir = '~/message-archive'
+field = 'Newsgroups'
+
+if len(sys.argv) == 2:
+	field = sys.argv[1]
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
@@ -38,7 +42,7 @@ for hashDir in os.listdir(os.path.expanduser(messageDir)):
 			for line in messageFile:
 				splitLine = line.split(' ')
 
-				if (splitLine[0] == 'Newsgroups:'):
+				if (splitLine[0][:-1] == field):
 					for messageNewsgroup in splitLine[1][:-1].split(','):
 						if messageNewsgroup in newsgroups:
 							newsgroups[messageNewsgroup] = newsgroups[messageNewsgroup] + 1
