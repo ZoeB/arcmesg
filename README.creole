@@ -37,6 +37,7 @@ read in these places, storing them all in a directory called
 === To do ===
 
 * Fix downloading of messages that don't currently work
+* As per RFC 3977 section 8.5, I don't need to get all headers at first, only the Message-ID header, *then* I can retrieve the whole message
 * Write all kinds of errors to the error log file
 * Don't overwrite existing POP3 messages.  Preferably don't get them either.
 * Support NNTP's NEWNEWS command
