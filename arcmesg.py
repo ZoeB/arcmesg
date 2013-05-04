@@ -17,7 +17,7 @@ def getMessageID(message):
 	for line in message:
 		splitLine = line.decode('latin-1').split(' ')
 
-		if (splitLine[0].lower() == 'Message-ID:'.lower()):
+		if splitLine[0].lower() == 'message-id:':
 			return splitLine[1][1:-1]
 
 	return None
@@ -26,7 +26,7 @@ def getArchivable(message):
 	for line in message:
 		splitLine = line.decode('latin-1').split(' ')
 
-		if (splitLine[0].lower() == 'X-No-Archive:'.lower()) and splitLine[1].lower() == 'Yes'.lower():
+		if splitLine[0].lower() == 'x-no-archive:' and splitLine[1].lower() == 'yes':
 			return False
 
 	return True
@@ -194,7 +194,7 @@ def getMessagesViaPop3(server, username, password, delete):
 		email = connection.retr(emailNumberActual)
 		writeMessage(email[1])
 
-		if (delete == True):
+		if delete == True:
 			connection.dele(emailNumberActual)
 
 	connection.quit()
