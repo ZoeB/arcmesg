@@ -151,7 +151,14 @@ def getMessagesViaNntp(server, group, username = None, password = None):
 
 				continue
 
-			messageBody = connection.body(messageNumber)[1]
+			try:
+				messageBody = connection.body(messageNumber)[1]
+			except:
+				if errorLogFile:
+					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t retrieve body)\n')
+
+				continue
+
 			writeMessage(messageHead.lines, messageBody.lines)
 
 	connection.quit()
