@@ -17,10 +17,19 @@ def getMessageID(message):
 	for line in message:
 		splitLine = line.decode('latin-1').split(' ')
 
-		if (splitLine[0] == 'Message-ID:'):
+		if (splitLine[0].lower() == 'Message-ID:'.lower()):
 			return splitLine[1][1:-1]
 
 	return None
+
+def getArchivable(message):
+	for line in message:
+		splitLine = line.decode('latin-1').split(' ')
+
+		if (splitLine[0].lower() == 'X-No-Archive:'.lower()) and splitLine[1].lower() == 'Yes'.lower():
+			return False
+
+	return True
 
 def hashMessageID(messageID):
 	if not messageID:
@@ -148,6 +157,12 @@ def getMessagesViaNntp(server, group, username = None, password = None):
 			if messageAlreadyArchived(hashedMessageID):
 				if errorLogFile:
 					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Duplicate)\n')
+
+				continue
+
+			if getArchivable(messageHead.lines) == False:
+				if errorLogFile:
+					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (X-No-Archive: Yes)\n')
 
 				continue
 
