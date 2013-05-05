@@ -8,7 +8,6 @@ import csv, os, string, sys
 
 configFile = '~/.arcmesgrc'
 messageDir = '~/message-archive'
-field = 'Newsgroups'
 
 if len(sys.argv) == 2:
 	field = sys.argv[1]
@@ -32,7 +31,7 @@ for line in csv.reader(config, delimiter='\t'):
 
 		messageDir = line[1]
 
-newsgroups = {}
+deletedMessageCount = 0;
 
 for hashDir in os.listdir(os.path.expanduser(messageDir)):
 	for hashSubdir in os.listdir(os.path.expanduser(messageDir+'/'+hashDir)):
@@ -42,12 +41,12 @@ for hashDir in os.listdir(os.path.expanduser(messageDir)):
 			for line in messageFile:
 				splitLine = line.split(' ')
 
-				if (splitLine[0][:-1].lower() == field.lower()):
-					for messageNewsgroup in splitLine[1][:-1].lower().split(','):
-						if messageNewsgroup in newsgroups:
-							newsgroups[messageNewsgroup] = newsgroups[messageNewsgroup] + 1
-						else:
-							newsgroups[messageNewsgroup] = 1
+				if (splitLine[0][:-1].lower() == 'x-no-archive' and splitLine[1][:-1].lower() == 'yes'):
+					os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile))
+					deletedMessageCount = deletedMessageCount + 1;
+					continue
 
-for newsgroup, tally in newsgroups.items():
-	print(newsgroup, tally)
+if (deletedMessageCount == 1):
+	print('Deleted', deletedMessageCount, 'message')
+else:
+	print('Deleted', deletedMessageCount, 'messages')
