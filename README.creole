@@ -41,5 +41,4 @@ read in these places, storing them all in a directory called
 * Write all kinds of errors to the error log file
 * Don't overwrite existing POP3 messages.  Preferably don't get them either.
 * Support NNTP's NEWNEWS command
-* Write tool to import batches of message files
 * Port to C
