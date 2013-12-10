@@ -8,6 +8,7 @@ import csv, glob, hashlib, mesg, os, string, sys
 
 configFile = '~/.arcmesgrc'
 messageDir = '~/message-archive'
+terseOutput = False
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
@@ -32,6 +33,10 @@ for line in csv.reader(config, delimiter='\t'):
 inputFilenames = []
 
 for argument in sys.argv:
+	if argument == '--terse':
+		terseOutput = True
+		continue
+
 	filenames = glob.glob(argument)
 
 	for filename in filenames:
@@ -43,18 +48,33 @@ for inputFilename in inputFilenames:
 	message = file.readlines()
 	messageID = mesg.getMessageID(message)
 
+	if terseOutput == True:
+		sys.stdout.flush() # Really, this should be at the end of the loop, but I don't want to duplicate it before each continue
+
 	if mesg.getArchivable(message) == False:
-		print('Skipping ' + inputFilename + '; not archivable (x-no-archive: yes)')
+		if terseOutput == True:
+			sys.stdout.write('X')
+		else:
+			print('Skipping ' + inputFilename + '; not archivable (x-no-archive: yes)')
+
 		continue
 
 	if not messageID:
-		print('Skipping ' + inputFilename + '; no message ID')
+		if terseOutput == True:
+			sys.stdout.write('M')
+		else:
+			print('Skipping ' + inputFilename + '; no message ID')
+
 		continue
 
 	hashedMessageID = mesg.hashMessageID(messageID)
 
 	if mesg.messageAlreadyArchived(messageDir, hashedMessageID):
-		print('Skipping ' + inputFilename + '; already in collection')
+		if terseOutput == True:
+			sys.stdout.write('D') # Duplicate
+		else:
+			print('Skipping ' + inputFilename + '; already in collection')
+
 		continue
 
 	# This duplicates some of mesg.py, which is bad practice
@@ -73,4 +93,11 @@ for inputFilename in inputFilenames:
 		os.mkdir(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir), 0o755)
 
 	os.rename(inputFilename, messageFilename)
-	print('Imported ' + inputFilename)
+
+	if terseOutput == True:
+		sys.stdout.write('.')
+	else:
+		print('Imported ' + inputFilename)
+
+if terseOutput == True:
+	print()
