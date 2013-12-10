@@ -55,8 +55,9 @@ for inputFilename in inputFilenames:
 		if terseOutput == True:
 			sys.stdout.write('X')
 		else:
-			print('Skipping ' + inputFilename + '; not archivable (x-no-archive: yes)')
+			print('Deleting ' + inputFilename + '; not archivable (x-no-archive: yes)')
 
+		os.remove(inputFilename)
 		continue
 
 	if not messageID:
@@ -73,8 +74,9 @@ for inputFilename in inputFilenames:
 		if terseOutput == True:
 			sys.stdout.write('D') # Duplicate
 		else:
-			print('Skipping ' + inputFilename + '; already in collection')
+			print('Deleting ' + inputFilename + '; already in collection')
 
+		os.remove(inputFilename)
 		continue
 
 	# This duplicates some of mesg.py, which is bad practice
