@@ -30,9 +30,9 @@ Any combination of POP3 and news servers is allowed.  In the case
 of POP3, you should specify whether or not you want to delete messages
 after downloading them.  The default action is to keep them.
 
-When you run the script, it will archive all the messages it can
-read in these places, storing them all in a directory called
-{{{message-archive}}} which resides in your home directory.
+When you run the {{{arcmesg.py}}} script, it will archive all the
+messages it can read in these places, storing them all in a directory
+called {{{message-archive}}} which resides in your home directory.
 
 === To do ===
 
