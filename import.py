@@ -44,7 +44,7 @@ for argument in sys.argv:
 
 # Try to import each file in turn
 for inputFilename in inputFilenames:
-	file = open(inputFilename, 'r')
+	file = open(inputFilename, 'r', 1, 'iso-8859-1')
 	message = file.readlines()
 	messageID = mesg.getMessageID(message)
 
