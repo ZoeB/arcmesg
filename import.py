@@ -49,7 +49,7 @@ for inputFilename in inputFilenames:
 	messageID = mesg.getMessageID(message)
 
 	if terseOutput == True:
-		sys.stdout.flush() # Really, this should be at the end of the loop, but I don't want to duplicate it before each continue
+		sys.stdout.flush() # Really, this should be at the end of the loop, but I don't want to duplicate it before each continue
 
 	if mesg.getArchivable(message) == False:
 		if terseOutput == True:
