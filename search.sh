@@ -3,4 +3,4 @@
 echo "Search query?"
 read string
 
-find * -type f | xargs grep "$string"
+find * -type f | xargs grep -i "$string"
