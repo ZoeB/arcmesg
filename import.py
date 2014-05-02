@@ -8,6 +8,7 @@ import csv, glob, hashlib, mesg, os, string, sys
 
 configFile = '~/.arcmesgrc'
 messageDir = '~/message-archive'
+deleteDuplicates = False
 terseOutput = False
 
 if not os.path.exists(os.path.expanduser(configFile)):
@@ -33,6 +34,10 @@ for line in csv.reader(config, delimiter='\t'):
 inputFilenames = []
 
 for argument in sys.argv:
+	if argument == '--delete-duplicates':
+		deleteDuplicates = True
+		continue
+
 	if argument == '--terse':
 		terseOutput = True
 		continue
@@ -74,9 +79,14 @@ for inputFilename in inputFilenames:
 		if terseOutput == True:
 			sys.stdout.write('D') # Duplicate
 		else:
-			print('Deleting ' + inputFilename + '; already in collection')
+			if deleteDuplicates == True:
+				print('Deleting ' + inputFilename + '; already in collection')
+			else:
+				print('Skipping ' + inputFilename + '; already in collection')
 
-		os.remove(inputFilename)
+		if deleteDuplicates == True:
+			os.remove(inputFilename)
+
 		continue
 
 	# This duplicates some of mesg.py, which is bad practice
