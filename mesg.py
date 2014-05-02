@@ -12,7 +12,10 @@ def getMessageID(message):
 			splitLine = line.split(' ')
 
 		if splitLine[0].lower() == 'message-id:':
-			return splitLine[1][1:-1] #TODO: Fix this!  DOS format messages have CRLF at the end, not just LF.  I should lob off >CRLF, >CR or >LF, whichever the line ends in.  It looks like the Python line splitter lobs off the LF, not the CRLF.
+			if (splitLine[1][-1:] == '\n'): # DOS format messages have CRLF at the end, not just LF.  It looks like the Python line splitter lobs off just the CR or LF, not the whole CRLF.  Compensate for that.
+				splitLine[1] = splitLine[1][0:-1]
+
+			return splitLine[1][1:-1]
 
 	return None
 
