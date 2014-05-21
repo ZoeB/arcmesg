@@ -3,4 +3,4 @@
 echo "Search query?"
 read string
 
-find * -type f | xargs grep -ils "$string" | xargs tar cf "$string.tar"
+find ?? -type f | xargs grep -ils "$string" | xargs tar cf "$string.tar"
