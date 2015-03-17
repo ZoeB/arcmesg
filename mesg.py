@@ -2,7 +2,11 @@
 # For Python 3
 # See README.creole for more information
 
-import csv, datetime, hashlib, nntplib, os, poplib, string
+import csv, datetime, hashlib, nntplib, os, poplib, string, sys
+
+if sys.version_info[0] != 3:
+	print('Please use Python 3')
+	exit()
 
 def getMessageID(message):
 	for line in message:
