@@ -85,7 +85,7 @@ def writeMessage(messageDir, downloadLogFile, errorLogFile, message, messageBody
 			messageFile.write(line.decode('latin-1') + '\n')
 		except: # If we can't cope with a message, don't save it
 			messageFile.close()
-			os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashFile))
+			os.unlink(os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile))
 
 			if errorLogFile:
 				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t decode)\n')
