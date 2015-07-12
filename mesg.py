@@ -192,11 +192,20 @@ def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, userna
 	except:
 		if errorLogFile:
 			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
-			return
+
+		return
 
 	for emailNumber in list[1]:
 		emailNumberActual = emailNumber.decode('latin-1').split(' ')[0]
-		email = connection.retr(emailNumberActual)
+
+		try:
+			email = connection.retr(emailNumberActual)
+		except:
+			if errorLogFile:
+				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding e-mail ' + emailNumberActual + ' (Can\'t retrieve)\n')
+
+			continue
+
 		writeMessage(messageDir, downloadLogFile, errorLogFile, email[1])
 
 		if delete == True:
