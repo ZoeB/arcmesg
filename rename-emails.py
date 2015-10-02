@@ -16,5 +16,5 @@ for filename in os.listdir('.'):
 		result = re.search('Message-ID: <([^>]+)>', line, flags=re.IGNORECASE)
 
 		if (result and result.group(1) and '@' in result.group(1)):
-			os.rename(filename, result.group(1))
+			os.rename(filename, result.group(1) + '.eml')
 			break
