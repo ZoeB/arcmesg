@@ -183,7 +183,7 @@ def getMessagesViaNntp(messageDir, downloadLogFile, errorLogFile, server, group,
 	connection.quit()
 	return
 
-def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete):
+def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete, limit):
 	try:
 		connection = poplib.POP3(server)
 		connection.user(username)
@@ -194,6 +194,8 @@ def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, userna
 			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
 
 		return
+
+	messagesRetrieved = 0
 
 	for emailNumber in list[1]:
 		emailNumberActual = emailNumber.decode('latin-1').split(' ')[0]
@@ -210,6 +212,11 @@ def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, userna
 
 		if delete == True:
 			connection.dele(emailNumberActual)
+
+		messagesRetrieved = messagesRetrieved + 1
+
+		if messagesRetrieved == limit:
+			break
 
 	connection.quit()
 	return

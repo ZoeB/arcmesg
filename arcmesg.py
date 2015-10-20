@@ -58,19 +58,27 @@ for line in csv.reader(config, delimiter='\t'):
 				pass
 
 		elif protocol == 'pop3':
-			if len(line) < 5 or len(line) > 6:
+			if len(line) < 5 or len(line) > 7:
 				continue
 
 			server = line[2]
 			username = line[3]
 			password = line[4]
+			delete = False
+			limit = 0
 
-			if len(line) > 5 and line[5] == 'delete':
-				delete = True
-			else:
-				delete = False
+			argument = 5;
+			arguments = len(line);
 
-			mesg.getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete)
+			while argument < arguments:
+				if line[argument] == 'delete':
+					delete = True
+				else:
+					limit = int(line[argument])
+
+				argument = argument + 1
+
+			mesg.getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete, limit)
 
 if downloadLogFile:
 	downloadLogFile.close()
