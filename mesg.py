@@ -218,9 +218,5 @@ def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, userna
 		if messagesRetrieved == limit:
 			break
 
-	try:
-		connection.quit()
-	except:
-		pass
-
+	connection.quit()
 	return
