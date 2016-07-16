@@ -189,9 +189,9 @@ def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, userna
 		connection.user(username)
 		connection.pass_(password)
 		list = connection.list()
-	except:
+	except poplib.error_proto as detail:
 		if errorLogFile:
-			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
+			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect): ' + detail.args[0].decode('latin-1') + '\n')
 
 		return
 
