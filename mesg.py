@@ -116,6 +116,7 @@ def writeMessage(messageDir, downloadLogFile, errorLogFile, message, messageBody
 def getMessagesViaNntp(messageDir, downloadLogFile, errorLogFile, server, group, username = None, password = None):
 	try:
 		connection = nntplib.NNTP(server, 119, username, password)
+		nntplib._MAXLINE = 65536 # Because some e-mail clients break the spec
 	except:
 		if errorLogFile:
 			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
