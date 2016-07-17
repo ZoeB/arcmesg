@@ -186,6 +186,7 @@ def getMessagesViaNntp(messageDir, downloadLogFile, errorLogFile, server, group,
 def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete, limit):
 	try:
 		connection = poplib.POP3(server)
+		poplib._MAXLINE = 8192 # Because some e-mail clients break the spec
 		connection.user(username)
 		connection.pass_(password)
 		list = connection.list()
