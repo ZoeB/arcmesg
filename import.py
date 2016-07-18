@@ -34,6 +34,9 @@ for line in csv.reader(config, delimiter='\t'):
 inputFilenames = []
 
 for argument in sys.argv:
+	if argument[-3:] == '.py':
+		continue
+
 	if argument == '--delete-duplicates':
 		deleteDuplicates = True
 		continue
