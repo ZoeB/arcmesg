@@ -68,10 +68,10 @@ for inputFilename in inputFilenames:
 		os.remove(inputFilename)
 		continue
 
-	if not messageID:
-		hash = mesg.hashMessage(message)
-	else:
+	if messageID:
 		hash = mesg.hashMessageID(messageID)
+	else:
+		hash = mesg.hashMessage(message)
 
 	if mesg.messageAlreadyArchived(messageDir, hash):
 		if terseOutput == True:
