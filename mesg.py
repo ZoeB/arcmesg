@@ -10,6 +10,10 @@ if sys.version_info[0] != 3:
 
 def getMessageID(message):
 	for line in message:
+		# Stop looking for a message ID after reaching the end of the headers and start of the body, to avoid a false positive from a quoted message ID
+		if len(line.strip()) == 0:
+			return None
+
 		try:
 			splitLine = line.decode('latin-1').split(' ')
 		except:
