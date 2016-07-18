@@ -39,6 +39,12 @@ def getArchivable(message):
 
 	return True
 
+def hashMessage(message):
+	if not message:
+		return None
+
+	return 'xx'+hashlib.sha1(''.join(message).encode()).hexdigest()[2:]
+
 def hashMessageID(messageID):
 	if not messageID:
 		return None

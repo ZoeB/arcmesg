@@ -69,16 +69,11 @@ for inputFilename in inputFilenames:
 		continue
 
 	if not messageID:
-		if terseOutput == True:
-			sys.stdout.write('M')
-		else:
-			print('Skipping ' + inputFilename + '; no message ID')
+		hash = mesg.hashMessage(message)
+	else:
+		hash = mesg.hashMessageID(messageID)
 
-		continue
-
-	hashedMessageID = mesg.hashMessageID(messageID)
-
-	if mesg.messageAlreadyArchived(messageDir, hashedMessageID):
+	if mesg.messageAlreadyArchived(messageDir, hash):
 		if terseOutput == True:
 			sys.stdout.write('D') # Duplicate
 		else:
@@ -93,9 +88,9 @@ for inputFilename in inputFilenames:
 		continue
 
 	# This duplicates some of mesg.py, which is bad practice
-	hashDir = hashedMessageID[:2]
-	hashSubdir = hashedMessageID[2:4]
-	hashFile = hashedMessageID[4:]
+	hashDir = hash[:2]
+	hashSubdir = hash[2:4]
+	hashFile = hash[4:]
 	messageFilename = os.path.expanduser(messageDir+'/'+hashDir+'/'+hashSubdir+'/'+hashFile)
 
 	if not os.path.exists(os.path.expanduser(messageDir)):
