@@ -21,3 +21,4 @@ for filename in os.listdir('.'):
 
 	if messageIDs == 1:
 		os.rename(filename, messageID + '.eml')
+		print(filename + ' -> ' + messageID + '.eml')
