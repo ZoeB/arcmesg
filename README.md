@@ -1,16 +1,16 @@
-== ArcMesg ==
+# ArcMesg
 
 ArcMesg is a simple program used to archive messages, both e-mails
 and USENET news.  Each message is stored in a separate file, named
 after the SHA1 of its universally unique message ID.
 
-=== Usage ===
+## Usage
 
 To use ArcMesg, set up a file in your home directory called
-{{{.arcmesgrc}}} with information about the messages you want to
+```.arcmesgrc``` with information about the messages you want to
 retrieve, in the following tab-separated format:
 
-{{{
+```
 # The optional custom message repository directory should appear
 # before the things you want to put in it
 DocumentRoot	~/mesg
@@ -24,17 +24,17 @@ Pull	pop3	mail.example.com	alice	password	keep
 Pull	pop3	mail.example.com	bob	password	delete
 Pull	nntp	public-news.example.com	sci.physics
 Pull	nntp	private-news.example.com	alice	password	sci.*
-}}}
+```
 
 Any combination of POP3 and news servers is allowed.  In the case
 of POP3, you should specify whether or not you want to delete messages
 after downloading them.  The default action is to keep them.
 
-When you run the {{{arcmesg.py}}} script, it will archive all the
+When you run the ```arcmesg.py``` script, it will archive all the
 messages it can read in these places, storing them all in a directory
-called {{{message-archive}}} which resides in your home directory.
+called ```message-archive``` which resides in your home directory.
 
-=== To do ===
+## To do
 
 * Fix downloading of messages that don't currently work
 * As per RFC 3977 section 8.5, I don't need to get all headers at first, only the Message-ID header, *then* I can retrieve the whole message
