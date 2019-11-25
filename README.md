@@ -43,4 +43,3 @@ called ```message-archive``` which resides in your home directory.
 * Don't overwrite existing POP3 messages.  Preferably don't get them either.
 * Support NNTP's NEWNEWS command
 * Port to C
-* As per RFC 2919, uses the List-Id header to identify mailing lists
