@@ -47,11 +47,11 @@ You should now have several e-mails stored together, one file per e-mail.
 
 <Explain how to get mailing list archives; how to get USENET newsgroup archives>
 
-First, install ```git```.
+First, install ```git```, which has the useful utility ```git mailsplit```.
 
-Ensure your mbox files end in the ```.mbox``` extension.
+Next, ensure your mbox files end in the ```.mbox``` extension.
 
-Run the included script ```split.sh```.
+Finally, run the included script ```split.sh```.
 
 ## Usage
 
