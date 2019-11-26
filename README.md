@@ -6,7 +6,7 @@ ArcMesg is a set of simple tools used to move and manipulate message files, orig
 
 Before you can use ArcMesg to collate message files, you should first download some.
 
-### Getting message files via POP3
+### Downloading e-mails via POP3
 
 First, install ```fetchmail```.  Then create the file ```~/.fetchmailrc```, and ```chmod 600 ~/.fetchmailrc```.  Give it the following content:
 
@@ -43,7 +43,15 @@ Test the script with ```echo 'Test' | ~/incoming-messages/save.sh```.  You shoul
 
 You should now have several e-mails stored together, one file per e-mail.
 
-<Explain how to get mailing list archives; how to get USENET newsgroup archives; how to split mbox files with git;>
+### Splitting up mbox files
+
+<Explain how to get mailing list archives; how to get USENET newsgroup archives>
+
+First, install ```git```.
+
+Ensure your mbox files end in the ```.mbox``` extension.
+
+Run the included script ```split.sh```.
 
 ## Usage
 
