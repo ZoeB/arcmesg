@@ -6,7 +6,44 @@ ArcMesg is a set of simple tools used to move and manipulate message files, orig
 
 Before you can use ArcMesg to collate message files, you should first download some.
 
-<Explain how to get mailing list archives; how to get USENET newsgroup archives; how to split mbox files with git; how to fetch POP3 e-mails to different files with fetchmail>
+### Getting message files via POP3
+
+First, install ```fetchmail```.  Then create the file ```~/.fetchmailrc```, and ```chmod 600 ~/.fetchmailrc```.  Give it the following content:
+
+```
+poll pop3.example.com
+	protocol pop3
+	username "foo"
+	password "bar"
+	fetchall
+	mda ~/incoming-messages/save.sh
+```
+
+Change ```pop3.example.com``` to your mail server, ```foo``` to your username, and ```bar``` to your password.  This will cause ```fetchmail```, when you next run it, to pipe each e-mail message, one at a time, to the script ```~/incoming-messages/save.sh``` before deleting it from the mail server.
+
+Next, ```mkdir ~/incoming-messages``` and create the file ```~/incoming-messages/save.sh``` with the following content:
+
+```
+#!/bin/sh
+
+number=1
+filename="/home/foo/incoming-messages/${number}.txt"
+
+while [ -f $filename ]; do
+	number=$(( $number + 1 ))
+	filename="/home/foo/incoming-messages/${number}.txt"
+done
+
+tee $filename
+```
+
+Replace ```foo``` with your username.  ```chmod 755 ~/incoming-messages/save.sh``` so you can execute it.  This script saves each piece of text passed to it in a sequentially numbered file.
+
+Test the script with ```echo 'Test' | ~/incoming-messages/save.sh```.  You should now have a file called ```~/incoming-messages/1.txt``` with the content ```Test```.  If so, delete it, double check your ```~/.fetchmailrc``` file, and run ```fetchmail```.
+
+You should now have several e-mails stored together, one file per e-mail.
+
+<Explain how to get mailing list archives; how to get USENET newsgroup archives; how to split mbox files with git;>
 
 ## Usage
 
