@@ -49,7 +49,7 @@ def hashMessageID(messageID):
 	if not messageID:
 		return None
 
-	return hashlib.sha1(messageID.encode()).hexdigest()
+	return hashlib.sha1(messageID.lower().encode()).hexdigest()
 
 def messageAlreadyArchived(messageDir, hashedMessageID):
 	hashDir = hashedMessageID[:2]
