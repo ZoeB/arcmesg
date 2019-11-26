@@ -1,38 +1,23 @@
 # ArcMesg
 
-ArcMesg is a simple program used to archive messages, both e-mails
-and USENET news.  Each message is stored in a separate file, named
-after the SHA1 of its universally unique message ID.
+ArcMesg is a set of simple tools used to move and manipulate message files, originating from both e-mails and USENET news.  Each message must be stored in a separate file, and will be named after the SHA1 of its universally unique message ID.
+
+## Getting and splitting up messages
+
+Before you can use ArcMesg to collate message files, you should first download some.
+
+<Explain how to get mailing list archives; how to get USENET newsgroup archives; how to split mbox files with git; how to fetch POP3 e-mails to different files with fetchmail>
 
 ## Usage
 
-To use ArcMesg, set up a file in your home directory called
-```.arcmesgrc``` with information about the messages you want to
-retrieve, in the following tab-separated format:
+Now you're ready to collate and sort your message files.
+
+To use ArcMesg, set up a file in your home directory called ```.arcmesgrc``` with the following information, in tab-separated format:
 
 ```
-# The optional custom message repository directory should appear
-# before the things you want to put in it
+# The optional custom message repository directory
 DocumentRoot	~/mesg
-
-# The optional log files should appear before anything to be logged
-DownloadLog	/var/log/arcmesg/download.log
-ErrorLog	/var/log/arcmesg/error.log
-
-# You can specify as many servers to pull messages from as you like
-Pull	pop3	mail.example.com	alice	password	keep
-Pull	pop3	mail.example.com	bob	password	delete
-Pull	nntp	public-news.example.com	sci.physics
-Pull	nntp	private-news.example.com	alice	password	sci.*
 ```
-
-Any combination of POP3 and news servers is allowed.  In the case
-of POP3, you should specify whether or not you want to delete messages
-after downloading them.  The default action is to keep them.
-
-When you run the ```arcmesg.py``` script, it will archive all the
-messages it can read in these places, storing them all in a directory
-called ```message-archive``` which resides in your home directory.
 
 ## To do
 
