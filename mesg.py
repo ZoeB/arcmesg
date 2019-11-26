@@ -1,6 +1,6 @@
 # Message module, to manipulate e-mails and USENET messages, by Zoe Blade
 # For Python 3
-# See README.creole for more information
+# See README.md for more information
 
 import csv, datetime, hashlib, nntplib, os, poplib, string, sys
 

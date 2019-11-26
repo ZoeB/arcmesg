@@ -2,7 +2,7 @@
 
 # Import, a program to archive single message files, by Zoe Blade
 # For Python 3
-# See README.creole for more information
+# See README.md for more information
 
 import csv, glob, hashlib, mesg, os, string, sys
 
