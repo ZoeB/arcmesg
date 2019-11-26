@@ -45,6 +45,10 @@ for argument in sys.argv:
 		verbosity = 'Terse'
 		continue
 
+	if argument == '--verbose':
+		verbosity = 'Verbose'
+		continue
+
 	filenames = glob.glob(argument)
 
 	for filename in filenames:
@@ -55,6 +59,10 @@ for inputFilename in inputFilenames:
 	file = open(inputFilename, 'r', 1, 'iso-8859-1')
 	message = file.readlines()
 	messageID = mesg.getMessageID(message)
+
+	if verbosity == 'Verbose':
+		print('File: ' + inputFilename)
+		print('Message ID: ' + messageID)
 
 	if verbosity == 'Terse':
 		sys.stdout.flush() # Really, this should be at the end of the loop, but I don't want to duplicate it before each continue
@@ -72,6 +80,9 @@ for inputFilename in inputFilenames:
 		hash = mesg.hashMessageID(messageID)
 	else:
 		hash = mesg.hashMessage(message)
+
+	if verbosity == 'Verbose':
+		print('Hash: ' + hash)
 
 	if mesg.messageAlreadyArchived(messageDir, hash):
 		if verbosity == 'Terse':
