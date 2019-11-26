@@ -2,7 +2,7 @@
 
 # Tally, a program to tally archived e-mails and news, by Zoe Blade
 # For Python 3
-# See README.creole for more information
+# See README.md for more information
 
 import csv, os, string, sys
 

@@ -1,8 +1,8 @@
 # Message module, to manipulate e-mails and USENET messages, by Zoe Blade
 # For Python 3
-# See README.creole for more information
+# See README.md for more information
 
-import csv, datetime, hashlib, nntplib, os, poplib, string, sys
+import csv, datetime, hashlib, os, string, sys
 
 if sys.version_info[0] != 3:
 	print('Please use Python 3')
@@ -122,113 +122,3 @@ def writeMessage(messageDir, downloadLogFile, errorLogFile, message, messageBody
 
 	messageFile.close()
 	return None
-
-def getMessagesViaNntp(messageDir, downloadLogFile, errorLogFile, server, group, username = None, password = None):
-	try:
-		connection = nntplib.NNTP(server, 119, username, password)
-		nntplib._MAXLINE = 65536 # Because some e-mail clients break the spec
-	except:
-		if errorLogFile:
-			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect)\n')
-
-	if group[-1] == '*':
-		groups = list(connection.descriptions(group)[1].keys())
-	else:
-		groups = [group]
-
-	for group in groups:
-		try:
-			groupInfo = connection.group(group)[0].split(' ')
-			firstMessageNumber = int(groupInfo[2])
-			lastMessageNumber = int(groupInfo[3])
-		except:
-			if errorLogFile:
-				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding group ' + group + ' (Can\'t get list of messages)\n')
-
-			return
-
-		for messageNumber in range(firstMessageNumber, lastMessageNumber + 1):
-			message = None
-			messageHead = None
-
-			try:
-				messageHead = connection.head(messageNumber)[1]
-			except:
-				if errorLogFile:
-					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t get message of that number)\n')
-
-				continue
-
-			messageID = getMessageID(messageHead.lines)
-
-			if not messageID:
-				if errorLogFile:
-					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + str(messageNumber) + ' in ' + group + ' (Can\'t find message ID)\n')
-
-				continue
-
-			hashedMessageID = hashMessageID(messageID)
-
-			if messageAlreadyArchived(messageDir, hashedMessageID):
-				if errorLogFile:
-					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Duplicate)\n')
-
-				continue
-
-			if getArchivable(messageHead.lines) == False:
-				if errorLogFile:
-					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (X-No-Archive: Yes)\n')
-
-				continue
-
-			try:
-				messageBody = connection.body(messageNumber)[1]
-			except:
-				if errorLogFile:
-					errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding message ' + messageID + ' (Can\'t retrieve body)\n')
-
-				continue
-
-			writeMessage(messageDir, downloadLogFile, errorLogFile, messageHead.lines, messageBody.lines)
-
-	connection.quit()
-	return
-
-def getMessagesViaPop3(messageDir, downloadLogFile, errorLogFile, server, username, password, delete, limit):
-	try:
-		connection = poplib.POP3(server)
-		poplib._MAXLINE = 65536 # Because some e-mail clients break the spec
-		connection.user(username)
-		connection.pass_(password)
-		list = connection.list()
-	except poplib.error_proto as detail:
-		if errorLogFile:
-			errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding server ' + server + ' (Can\'t connect): ' + detail.args[0].decode('latin-1') + '\n')
-
-		return
-
-	messagesRetrieved = 0
-
-	for emailNumber in list[1]:
-		emailNumberActual = emailNumber.decode('latin-1').split(' ')[0]
-
-		try:
-			email = connection.retr(emailNumberActual)
-		except:
-			if errorLogFile:
-				errorLogFile.write(str(datetime.datetime.utcnow())[:-7] + ' Discarding e-mail ' + emailNumberActual + ' (Can\'t retrieve)\n')
-
-			continue
-
-		writeMessage(messageDir, downloadLogFile, errorLogFile, email[1])
-
-		if delete == True:
-			connection.dele(emailNumberActual)
-
-		messagesRetrieved = messagesRetrieved + 1
-
-		if messagesRetrieved == limit:
-			break
-
-	connection.quit()
-	return
