@@ -9,7 +9,7 @@ import csv, glob, hashlib, mesg, os, string, sys
 configFile = '~/.arcmesgrc'
 messageDir = '~/message-archive'
 deleteDuplicates = False
-terseOutput = False
+verbosity = 'Normal'
 
 if not os.path.exists(os.path.expanduser(configFile)):
 	print('Please create configuration file', configFile)
@@ -42,7 +42,7 @@ for argument in sys.argv:
 		continue
 
 	if argument == '--terse':
-		terseOutput = True
+		verbosity = 'Terse'
 		continue
 
 	filenames = glob.glob(argument)
@@ -56,11 +56,11 @@ for inputFilename in inputFilenames:
 	message = file.readlines()
 	messageID = mesg.getMessageID(message)
 
-	if terseOutput == True:
+	if verbosity == 'Terse':
 		sys.stdout.flush() # Really, this should be at the end of the loop, but I don't want to duplicate it before each continue
 
 	if mesg.getArchivable(message) == False:
-		if terseOutput == True:
+		if verbosity == 'Terse':
 			sys.stdout.write('X')
 		else:
 			print('Deleting ' + inputFilename + '; not archivable (x-no-archive: yes)')
@@ -74,7 +74,7 @@ for inputFilename in inputFilenames:
 		hash = mesg.hashMessage(message)
 
 	if mesg.messageAlreadyArchived(messageDir, hash):
-		if terseOutput == True:
+		if verbosity == 'Terse':
 			sys.stdout.write('D') # Duplicate
 		else:
 			if deleteDuplicates == True:
@@ -104,10 +104,10 @@ for inputFilename in inputFilenames:
 
 	os.rename(inputFilename, messageFilename)
 
-	if terseOutput == True:
+	if verbosity == 'Terse':
 		sys.stdout.write('.')
 	else:
 		print('Imported ' + inputFilename)
 
-if terseOutput == True:
+if verbosity == 'Terse':
 	print()
