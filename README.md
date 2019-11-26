@@ -36,7 +36,6 @@ called ```message-archive``` which resides in your home directory.
 
 ## To do
 
-* Fix downloading of messages that don't currently work
 * As per RFC 3977 section 8.5, I don't need to get all headers at first, only the Message-ID header, *then* I can retrieve the whole message
 * I believe I should read the message headers as ASCII, and only if a Content-Type header is present that specifies an alternative charset should the message then be closed and re-opened using the appropriate charset.  Currently, all messages are opened and processed as ISO-8859-1.  Of course, it would be ideal to ignore the charset entirely, and assume the headers are ASCII and everything else should be preserved as-is without understanding or interpreting it at all.
 * Write all kinds of errors to the error log file
